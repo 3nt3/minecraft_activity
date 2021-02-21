@@ -81,18 +81,32 @@ for line in lines:
             else:
                 player_data[parsed["player_name"]] = [[None, parsed["date"]]]
 
+player_colors = {}
 
-for entry in player_data['Spenoxx']:
-    if entry[0] is None or entry[1] is None:
-        continue
+i = 0
+for player_name in player_data.keys():
+    for entry in player_data[player_name]:
+        if entry[0] is None or entry[1] is None:
+            continue
 
-    entry[0] = time.mktime(datetime.datetime.strptime(
-        entry[0], "%Y-%m-%d %H:%M:%S").timetuple())
+        entry[0] = time.mktime(datetime.datetime.strptime(
+            entry[0], "%Y-%m-%d %H:%M:%S").timetuple())
 
-    entry[1] = time.mktime(datetime.datetime.strptime(
-        entry[1], "%Y-%m-%d %H:%M:%S").timetuple())
+        entry[1] = time.mktime(datetime.datetime.strptime(
+            entry[1], "%Y-%m-%d %H:%M:%S").timetuple())
 
-    # plot
-    plt.plot(entry, [0, 0], linewidth=5, solid_capstyle='round')
+        # plot
+        if not player_colors.get(player_name):
+            lines = plt.plot(entry, [i, i], linewidth=5,
+                             solid_capstyle='round', label=player_name)
+            player_colors[player_name] = lines[0].get_color()
+            plt.legend()
+
+        else:
+            plt.plot(entry, [i, i], linewidth=5,
+                     solid_capstyle='round', color=player_colors[player_name])
+
+    i += 1
+
 
 plt.show()
